@@ -2,7 +2,7 @@
  * File: Master.ino
  * Author: NGUYEN THANH
  * Date: 5/5/2023
- * Description: This is file for SPI
+ * Description: This is file for MASTER_SPI using Arduino
 */
 
 
@@ -18,12 +18,25 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  uint8_t rev;
-  SPI_begin();
-  rev = SPI_transfer("a"); //ASCII: 0x61 97 
+  uint8_t rev[2];
+  SPI_start();
+  rev[0] = SPI_transfer('X');  //0x58
+  rev[1] = SPI_transfer('Y');  //0x59
   SPI_end();
-  delay(1);
+  Serial.println("Master: " + String((char)rev[0])); 
+  Serial.println("Master: " + String((char)rev[1]));
+  delay(1000);
 }
+
+
+/*
+ * Function: SPI_setup
+ * Description: This function use for initialize, configure pins for MISO, MOSI, SS, SCK
+ * Input:
+ *  input: none
+ * Output:
+ *  return: none 
+*/
 
 void SPI_setup(){
   pinMode(MOSI_PIN, OUTPUT);
@@ -35,15 +48,40 @@ void SPI_setup(){
   delay(1);
 }
 
+/*
+ * Function: SPI_begin
+ * Description: This function use for starting SPi signal
+ * Input:
+ *  input: none
+ * Output:
+ *  return: none 
+*/
+
 void SPI_begin(void){
   digitalWrite(SS_PIN, HIGH); 
 }
 
+/*
+ * Function: SPI_stop
+ * Description: This function use for stopping SPi signal
+ * Input:
+ *  input: none
+ * Output:
+ *  return: none 
+*/
 void SPI_end(void){
   digitalWrite(SCK_PIN, LOW); 
   digitalWrite(SS_PIN, HIGH); 
 }
 
+/*
+ * Function: SPI_transfer
+ * Description: This function use for Master to transfer data SPI. MODE 0 bitOrder MSB
+ * Input:
+ *   data - data want to send
+ * Output:
+ *   return: data read via SPI
+*/
 uint8_t SPI_transfer(uint8_t byte_out)
 {
   uint8_t byte_in = 0; //0000.0000
