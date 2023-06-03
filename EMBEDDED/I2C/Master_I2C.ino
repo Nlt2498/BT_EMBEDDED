@@ -29,7 +29,6 @@ void loop() {
     Serial.println("Read fails: ");
   }
   delay(1000);
-
   
   //MASTER SEND DATA TO SLAVE------------------------------------
   int8_t result;
