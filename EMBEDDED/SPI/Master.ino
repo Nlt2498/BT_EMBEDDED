@@ -76,7 +76,7 @@ void SPI_end(void){
 
 /*
  * Function: SPI_transfer
- * Description: This function use for Master to transfer data SPI. 
+ * Description: This function use for Master to transfer data SPI. MODE 0 bitOrder MSB
  * Input:
  *   data - data want to send
  * Output:
