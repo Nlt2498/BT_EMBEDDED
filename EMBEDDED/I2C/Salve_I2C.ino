@@ -1,3 +1,9 @@
+/*
+ * File: Salve.ino
+ * Author: NGUYEN THANH
+ * Date: 5/5/2023
+ * Description: This is file for SALVE_I2C using Arduino
+*/
 #define SCL_PIN 3
 #define SDA_PIN 4
 
@@ -13,6 +19,7 @@ void loop() {
   int8_t s, c;
   
   s = I2C_begin(0x13); //waiting until MASTER (until meet START CONDITION)----------
+  
   if(s == 0){  //Master writes - Slave reads
     I2C_read(rev, 11);
     Serial.println("Master wants to write data.");
@@ -21,15 +28,27 @@ void loop() {
   else if(s == 1) { //Master reads - Slave writes
     c = I2C_write("[S]abcd"); //S AA A 61 A 62 A 63 A 64 A P
     Serial.println("Master wants to read data.");
-    if(c==1)          Serial.println("Write successfully!");
-    else if(c==-1)    Serial.println("Fail to write!(Master not respond)");
-    else              Serial.println("Something wrong???");  
+    if(c==1)          
+      Serial.println("Write successfully!");
+    else if(c==-1)    
+      Serial.println("Fail to write!(Master not respond)");
+    else              
+      Serial.println("Something wrong");  
   } 
   else if(s == 2)
    Serial.println("Wrong address.(Not my Address)");
   else
-   Serial.println("Other uncontrolled case!!!");
+   Serial.println("Other uncontrolled case");
 }
+
+/*
+ * Function: I2C_begin
+ * Description: This function use for starting I2C signal
+ * Input:
+ *  input: address I2C
+ * Output:
+ *  return: 0 right Address or 2 wrong Address 
+*/
 
 uint8_t I2C_begin(byte address)
 {
@@ -74,6 +93,15 @@ uint8_t I2C_begin(byte address)
    }   
 }
 
+/*
+ * Function: I2C_ReadByte
+ * Description: This function use for Read data from Master.
+ * Input:
+ *  input: none
+ * Output:
+ *  return: data want read
+*/
+
 byte I2C_ReadByte(void)
 {
   byte data, i;
@@ -89,6 +117,14 @@ byte I2C_ReadByte(void)
   I2C_SendACK();
   return data;
 }
+/*
+ * Function: I2C_SendACK
+ * Description: This function use for send ACK signal to Master
+ * Input:
+ *  input: none
+ * Output:
+ *  return: none 
+*/
 
 void I2C_SendACK(void)
 {
@@ -98,9 +134,17 @@ void I2C_SendACK(void)
    digitalWrite(SDA_PIN, LOW);
    while(digitalRead(SCL_PIN)==0); //waiting until SCL=1
    while(digitalRead(SCL_PIN)==1); //waiting until SCL=0
-   pinMode(SDA_PIN, INPUT);// SHOULD CALL AFTER CALLING "SDA_OUTPUT"
+   pinMode(SDA_PIN, INPUT); // SHOULD CALL AFTER CALLING "SDA_OUTPUT"
 }
 
+/*
+ * Function: I2C_ReadACK
+ * Description: This function use for reading ACK signal from Master about
+ * Input:
+ *  input: none
+ * Output:
+ *  return: 1 bit ACK 
+*/
 uint8_t I2C_ReadACK(void)
 {
   //return (0): ACK, return(1): NACK
@@ -113,7 +157,15 @@ uint8_t I2C_ReadACK(void)
 }
 
 
-//SLAVE SEND(8BIT/1BYTE) - after MASTER RECEIVES, send back 1 bit ACK.
+/*
+ * Function: I2C_WriteByte
+ * Description: This function use for SLAVE SEND(8BIT/1BYTE) - after MASTER RECEIVES, send back 1 bit ACK.
+ * Input:
+ *  input: none
+ * Output:
+ *  return: none 
+*/
+
 void I2C_WriteByte(byte data) //write 8 bit. data=8bit (MSB)
 {
   int i;
@@ -134,7 +186,14 @@ void I2C_WriteByte(byte data) //write 8 bit. data=8bit (MSB)
 
 }
 
-
+/*
+ * Function: I2C_read
+ * Description: This function use for read Data
+ * Input:
+ *  input: data want send, count data
+ * Output:
+ *  return: none 
+*/
 void I2C_read(byte *data, uint8_t count)
 {
   int i;
@@ -145,10 +204,18 @@ void I2C_read(byte *data, uint8_t count)
   }
 }
 
+
+/*
+ * Function: I2C_write
+ * Description: This function use for write Data
+ * Input:
+ *  input: data want send
+ * Output:
+ *  return: (-1): fail to send or (+1): write successfully.
+*/
+
 int8_t I2C_write(char *data) //"abc" = 'a' + 'b' + 'c' + '\0'
 {
-  //return (-1): fail to send.
-  //return (+1): write successfully.
   uint8_t ack; //0:ack, 1:nack
   while(*data != '\0')
   {
