@@ -1,7 +1,15 @@
+/*
+* File: ex1.cpp
+* Author: Nguyen Thanh
+* Date: 31/4/2023
+* Description: This is file for calculate distance and area of triangle in 2D Space
+*/
+
 #include <stdio.h>
 #include <stdint.h>
 #include <cmath>
 
+/***********************************Class Point**************************************/
 class Diem{
     private:
         int8_t toaDoX;
